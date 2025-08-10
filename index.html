@@ -1,0 +1,305 @@
+ <!DOCTYPE html>
+<html lang="en" data-theme="readysetcyber">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ReadySetCyber – Canada‑Wide Phishing Drill</title>
+  <meta name="description" content="ReadySetCyber: a Canada‑wide phishing simulation game with timer, scoring, accuracy, logos, and a local leaderboard. Multilingual." />
+  <meta property="og:title" content="ReadySetCyber – Phishing Drill" />
+  <meta property="og:description" content="Join the Canada‑wide phishing drill. Test your skills, learn red flags, and climb the leaderboard!" />
+  <meta property="og:type" content="website" />
+  <style>
+    :root {
+      --red: #d00000; --red-dark: #9b0000; --offwhite: #fffaf2; --ink: #111826; --ink-2: #2a3240;
+      --ok: #0b8f2d; --warn: #b26a00; --bad: #b00020; --focus: #004aad; --muted: #6b7280; --card: #ffffff;
+      --shadow: 0 6px 24px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.06);
+    }
+    html, body { height: 100%; }
+    body { margin: 0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial; background: linear-gradient(180deg, var(--offwhite), #fff); color: var(--ink); line-height: 1.5; }
+    header { position: sticky; top: 0; z-index: 50; background: #fff; box-shadow: var(--shadow); }
+    .bar { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 16px; padding: 10px 16px; }
+    .logo { width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; background: linear-gradient(135deg, var(--red), var(--red-dark)); color: white; font-weight: 800; letter-spacing: .5px; overflow: hidden; }
+    .brand { font-weight: 800; }
+    .tagline { color: var(--muted); font-weight: 600; }
+    .grow { flex: 1; }
+    select, input, button, textarea { font: inherit; }
+    .btn { background: var(--red); color: #fff; border: 0; padding: 10px 14px; border-radius: 12px; cursor: pointer; box-shadow: var(--shadow); font-weight: 700; }
+    .btn:hover { background: var(--red-dark); }
+    .btn.secondary { background: #eef2ff; color: var(--ink-2); }
+    .btn.ghost { background: transparent; border: 2px solid var(--ink-2); color: var(--ink-2); }
+    .btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 20px 16px 64px; }
+    .card { background: var(--card); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); }
+    .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 24px; align-items: center; padding: 18px 0 0; }
+    .hero h1 { font-size: clamp(26px, 4vw, 40px); margin: 6px 0 8px; }
+    .hero p { margin: 0 0 8px; }
+    .screen { display: none; } .screen.active { display: block; }
+    .grid { display: grid; gap: 14px; } .two { grid-template-columns: 1fr 1fr; }
+    label { font-weight: 700; }
+    .field { display: grid; gap: 6px; }
+    input[type="text"], input[type="email"], select { border: 2px solid #e5e7eb; padding: 10px 12px; border-radius: 10px; }
+    input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+    .hud { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .pill { padding: 6px 10px; background: #f3f4f6; border-radius: 999px; font-weight: 700; }
+    .pill.ok { background: #e6f6ea; color: var(--ok); }
+    .pill.bad { background: #fde7ea; color: var(--bad); }
+    .pill.warn { background: #fff4db; color: var(--warn); }
+    .email-frame { display: grid; grid-template-columns: 260px 1fr; gap: 16px; }
+    .email-list { background: #fafafa; border: 1px solid #eee; border-radius: 12px; overflow: hidden; }
+    .email-item { padding: 10px 12px; border-bottom: 1px solid #eee; cursor: pointer; }
+    .email-item[aria-current="true"], .email-item:hover { background: #fff; }
+    .email-body { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 16px; }
+    .email-head { border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 12px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px }
+    .email-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .hint { background: #fff4db; border-left: 4px solid var(--warn); padding: 8px 10px; border-radius: 6px; }
+    .flags { display: grid; gap: 8px; margin: 10px 0; }
+    .flag { display: flex; gap: 10px; align-items: start; }
+    table { width: 100%; border-collapse: collapse; } th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; } th { background: #f9fafb; }
+    footer { margin-top: 48px; color: var(--muted); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .kbd { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas, "Liberation Mono","Courier New",monospace; background: #f3f4f6; padding: 2px 6px; border-radius: 6px; border: 1px solid #e5e7eb; }
+    @media (max-width: 880px) { .hero { grid-template-columns: 1fr; } .email-frame { grid-template-columns: 1fr; } .two { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header role="banner" aria-label="Site header">
+    <div class="bar" role="navigation" aria-label="Top bar">
+      <div class="logo"><img id="siteLogo" alt="ReadySetCyber logo" style="width:100%;height:100%;object-fit:cover"></div>
+      <div class="brand" aria-label="ReadySetCyber">ReadySetCyber</div>
+      <div class="tagline">Ready. Set. Cyber.</div>
+      <div class="grow"></div>
+      <label class="sr-only" for="lang">Language</label>
+      <select id="lang" aria-label="Language selector"></select>
+      <button id="btn-how" class="btn secondary" data-i18n="howItWorks">How it works</button>
+    </div>
+  </header>
+
+  <main id="app" class="wrap" role="main">
+    <section class="hero card" aria-labelledby="h-title">
+      <div>
+        <h1 id="h-title" data-i18n="heroTitle">Canada‑Wide Phishing Drill</h1>
+        <p data-i18n="heroSubtitle">Test your skills in a safe simulation. Learn to spot red flags, move fast, and protect your community.</p>
+        <div class="hud" style="margin:12px 0 8px">
+          <span class="pill warn" id="countdown" aria-live="polite">—</span>
+          <span class="pill" id="eventTime"></span>
+          <span class="pill" id="cityTag">Canada • Coast to Coast</span>
+        </div>
+        <div class="hud">
+          <button class="btn" id="ctaStart" data-i18n="ctaStart">Play the Drill</button>
+          <button class="btn ghost" id="ctaLeaderboard" data-i18n="ctaLeaderboard">View Leaderboard</button>
+        </div>
+      </div>
+      <div class="card" aria-hidden="true">
+        <div style="display:grid;place-items:center;height:240px;border:2px dashed #e5e7eb;border-radius:12px">
+          <div style="text-align:center">
+            <div style="font-weight:800; font-size:22px;">🇨🇦 ReadySetCyber</div>
+            <div style="color:var(--muted)">Add your red/off‑white logo here</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-login" class="screen card" aria-labelledby="loginTitle">
+      <h2 id="loginTitle" data-i18n="loginTitle">Enter the Drill</h2>
+      <p data-i18n="loginBlurb">Pick a cyber handle (or your name) and your email so we can place you on the leaderboard.</p>
+      <form id="loginForm" class="grid two" autocomplete="on">
+        <div class="field">
+          <label for="handle" data-i18n="labelHandle">Cyber handle or name</label>
+          <input id="handle" name="handle" type="text" maxlength="40" required aria-required="true" placeholder="e.g., MapleShield" />
+        </div>
+        <div class="field">
+          <label for="email" data-i18n="labelEmail">Email</label>
+          <input id="email" name="email" type="email" required aria-required="true" placeholder="you@example.ca" />
+        </div>
+        <div class="field">
+          <label for="region" data-i18n="labelRegion">Province/Territory</label>
+          <select id="region" name="region" required aria-required="true"></select>
+        </div>
+        <div class="field">
+          <label for="consent">
+            <input id="consent" type="checkbox" required aria-required="true" />
+            <span data-i18n="labelConsent">I agree this is a learning simulation and my score may appear on the local leaderboard on this device.</span>
+          </label>
+        </div>
+        <div style="grid-column:1 / -1; display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn" type="submit" data-i18n="startNow">Start now</button>
+          <button class="btn secondary" type="button" id="btn-cancel-login" data-i18n="cancel">Cancel</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="screen-instructions" class="screen card" aria-labelledby="instTitle">
+      <h2 id="instTitle" data-i18n="instTitle">How the Drill Works</h2>
+      <ul>
+        <li data-i18n="inst1"><span class="kbd">1</span> minute global timer. Decide quickly and accurately.</li>
+        <li data-i18n="inst2">For each email, choose <strong>Phishing</strong> or <strong>Safe</strong>. Then optionally tick the red flags you notice for bonus points.</li>
+        <li data-i18n="inst3">Canadian context: examples reference common brands and agencies. These are fictional training samples.</li>
+        <li data-i18n="inst4">Score = correct decisions + flags − penalties. Ties break by fastest time.</li>
+        <li data-i18n="inst5">Finish all messages to post your score locally.</li>
+      </ul>
+      <div class="hud">
+        <button class="btn" id="beginGame" data-i18n="beginGame">Begin</button>
+        <button class="btn secondary" id="backToLogin" data-i18n="back">Back</button>
+      </div>
+    </section>
+
+    <section id="screen-game" class="screen" aria-labelledby="gameTitle">
+      <div class="hud" style="margin:8px 0 10px">
+        <span class="pill ok"><span data-i18n="score">Score</span>: <strong id="hudScore">0</strong></span>
+        <span class="pill"><span data-i18n="email">Email</span>: <strong id="hudIndex">1</strong>/<span id="hudTotal">5</span></span>
+        <span class="pill warn"><span data-i18n="timeLeft">Time left</span>: <strong id="hudTime">60</strong>s</span>
+        <span class="pill"><span data-i18n="accuracy">Accuracy</span>: <strong id="hudAccuracy">100%</strong></span>
+      </div>
+
+      <div class="email-frame">
+        <div class="email-list" role="listbox" aria-label="Email list" id="emailList"></div>
+        <div class="email-body card">
+          <div class="email-head">
+            <div>
+              <div><strong id="e-subject">Subject</strong></div>
+              <div><span data-i18n="from">From</span>: <span id="e-from">—</span> | <span data-i18n="to">To</span>: <span id="e-to">you@example.ca</span></div>
+            </div>
+            <div id="brandSpot" style="min-width:100px; text-align:right"></div>
+          </div>
+          <article id="e-html" aria-label="Email content"></article>
+          <div class="flags" id="flagList"></div>
+          <div class="email-actions" style="margin-top:10px">
+            <button class="btn" id="btn-phish" data-i18n="markPhish">Report as Phishing</button>
+            <button class="btn ghost" id="btn-safe" data-i18n="markSafe">Looks Safe</button>
+            <button class="btn secondary" id="btn-hint" data-i18n="hint">Hint</button>
+          </div>
+          <div id="hintBox" class="hint" style="display:none; margin-top:10px" role="status"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-results" class="screen card" aria-labelledby="resTitle">
+      <h2 id="resTitle" data-i18n="resTitle">Results</h2>
+      <p><strong data-i18n="finalScore">Final score</strong>: <span id="finalScore">0</span> · <strong data-i18n="finalTime">Time</strong>: <span id="finalTime">—</span>s · <strong data-i18n="finalAcc">Accuracy</strong>: <span id="finalAcc">—</span></p>
+      <div class="hud">
+        <button class="btn" id="saveScore" data-i18n="saveScore">Save to Leaderboard (this device)</button>
+        <button class="btn secondary" id="playAgain" data-i18n="playAgain">Play again</button>
+        <button class="btn ghost" id="goBoard" data-i18n="goBoard">View Leaderboard</button>
+      </div>
+      <details style="margin-top:10px">
+        <summary data-i18n="seeBreakdown">See question breakdown</summary>
+        <div id="breakdown"></div>
+      </details>
+    </section>
+
+    <section id="screen-board" class="screen card" aria-labelledby="boardTitle">
+      <h2 id="boardTitle" data-i18n="boardTitle">Local Leaderboard</h2>
+      <table aria-describedby="boardTitle">
+        <thead><tr>
+          <th>#</th>
+          <th data-i18n="colName">Name</th>
+          <th data-i18n="colRegion">Region</th>
+          <th data-i18n="colScore">Score</th>
+          <th data-i18n="colTime">Time (s)</th>
+          <th data-i18n="colAcc">Accuracy</th>
+          <th data-i18n="colDate">Date</th>
+        </tr></thead>
+        <tbody id="boardBody"></tbody>
+      </table>
+      <div class="hud" style="margin-top:10px">
+        <button class="btn" id="clearBoard" data-i18n="clearBoard">Clear leaderboard (this device)</button>
+        <button class="btn secondary" id="backHome" data-i18n="backHome">Back to home</button>
+      </div>
+    </section>
+
+    <footer class="card" role="contentinfo">
+      <p data-i18n="disclaimer">
+        Training simulation only. Sample messages reference well‑known Canadian brands and agencies for awareness purposes. No affiliation or endorsement implied. Do not enter real credentials. All data stays on your device unless you share it.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    // ===== CONFIG =====
+    const EVENT_TZ = "America/Toronto";
+    const EVENT_ISO = "2025-10-30T13:01:00-04:00";
+    const SITE_LOGO_DATA_URL = ""; // PASTE the data URL from readysetcyber_data_url.txt
+
+    // Brand assets: set to data URLs to use real logos, otherwise a red SVG badge will be generated
+    const BRAND_ASSETS = { canada_post: null, cra: null, aws: null, bell: null, rbc: null };
+
+    function svgBadge(text){
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='160' height='36' viewBox='0 0 160 36' role='img' aria-label='${text} logo'><rect rx='8' width='160' height='36' fill='%23d00000'/><text x='80' y='23' text-anchor='middle' font-family='system-ui,Segoe UI,Roboto' font-weight='700' font-size='14' fill='white'>${text}</text></svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+    function brandKeyFor(fromLine){
+      const s = (fromLine||'').toLowerCase();
+      if(s.includes('canada post') || s.includes('postes canada')) return 'canada_post';
+      if(s.includes('cra') || s.includes('canada revenue')) return 'cra';
+      if(s.includes('aws')) return 'aws';
+      if(s.includes('bell')) return 'bell';
+      if(s.includes('rbc')) return 'rbc';
+      return null;
+    }
+    function brandLogoFor(fromLine){
+      const key = brandKeyFor(fromLine);
+      if(!key) return null; return BRAND_ASSETS[key] || svgBadge(key.replace('_',' ').toUpperCase());
+    }
+
+    // Provinces/territories
+    const REGIONS = [ {code:'AB'},{code:'BC'},{code:'MB'},{code:'NB'},{code:'NL'},{code:'NS'},{code:'NT'},{code:'NU'},{code:'ON'},{code:'PE'},{code:'QC'},{code:'SK'},{code:'YT'} ];
+
+    // I18N (EN/FR fully; others basic to start)
+    const I18N = {
+      en:{ langName:'English', heroTitle:'Canada‑Wide Phishing Drill', heroSubtitle:'Test your skills in a safe simulation. Learn to spot red flags, move fast, and protect your community.', ctaStart:'Play the Drill', ctaLeaderboard:'View Leaderboard', howItWorks:'How it works', loginTitle:'Enter the Drill', loginBlurb:'Pick a cyber handle (or your name) and your email so we can place you on the leaderboard.', labelHandle:'Cyber handle or name', labelEmail:'Email', labelRegion:'Province/Territory', labelConsent:'I agree this is a learning simulation and my score may appear on the local leaderboard on this device.', startNow:'Start now', cancel:'Cancel', instTitle:'How the Drill Works', inst1:'1 minute global timer. Decide quickly and accurately.', inst2:'For each email, choose Phishing or Safe. Then optionally tick the red flags you notice for bonus points.', inst3:'Canadian context: examples reference common brands and agencies. These are fictional training samples.', inst4:'Score = correct decisions + flags − penalties. Ties break by fastest time.', inst5:'Finish all messages to post your score locally.', beginGame:'Begin', back:'Back', score:'Score', email:'Email', timeLeft:'Time left', accuracy:'Accuracy', from:'From', to:'To', markPhish:'Report as Phishing', markSafe:'Looks Safe', hint:'Hint', resTitle:'Results', finalScore:'Final score', finalTime:'Time', finalAcc:'Accuracy', saveScore:'Save to Leaderboard (this device)', playAgain:'Play again', goBoard:'View Leaderboard', seeBreakdown:'See question breakdown', boardTitle:'Local Leaderboard', colName:'Name', colRegion:'Region', colScore:'Score', colTime:'Time (s)', colAcc:'Accuracy', colDate:'Date', clearBoard:'Clear leaderboard (this device)', backHome:'Back to home', disclaimer:'Training simulation only. Sample messages reference well‑known Canadian brands and agencies for awareness purposes. No affiliation or endorsement implied. Do not enter real credentials. All data stays on your device unless you share it.', regions:{AB:'Alberta',BC:'British Columbia',MB:'Manitoba',NB:'New Brunswick',NL:'Newfoundland and Labrador',NS:'Nova Scotia',NT:'Northwest Territories',NU:'Nunavut',ON:'Ontario',PE:'Prince Edward Island',QC:'Quebec',SK:'Saskatchewan',YT:'Yukon'} },
+      fr:{ langName:'Français', heroTitle:"Exercice pancanadien d’hameçonnage", heroSubtitle:"Mettez vos compétences à l’épreuve en toute sécurité. Repérez les indices, réagissez vite et protégez votre communauté.", ctaStart:"Lancer l’exercice", ctaLeaderboard:"Voir le classement", howItWorks:"Mode d’emploi", loginTitle:"Entrer dans l’exercice", loginBlurb:"Choisissez un pseudo (ou votre nom) et votre courriel pour figurer au classement.", labelHandle:"Pseudo ou nom", labelEmail:"Courriel", labelRegion:"Province/Territoire", labelConsent:"J’accepte qu’il s’agisse d’une simulation d’apprentissage et que mon score puisse apparaître sur le classement local de cet appareil.", startNow:"Commencer", cancel:"Annuler", instTitle:"Fonctionnement de l’exercice", inst1:"Minuteur global d’une minute. Décidez vite et bien.", inst2:"Pour chaque message, choisissez Hameçonnage ou Sûr. Cochez ensuite les indices repérés pour des points bonus.", inst3:"Contexte canadien : exemples inspirés d’organismes et de marques connus. Échantillons fictifs pour la formation.", inst4:"Score = bonnes décisions + indices − pénalités. Les égalités se départagent au temps le plus court.", inst5:"Terminez tous les messages pour publier votre score localement.", beginGame:"Démarrer", back:"Retour", score:"Score", email:"Courriel", timeLeft:"Temps restant", accuracy:"Précision", from:"De", to:"À", markPhish:"Signaler hameçonnage", markSafe:"Semble sûr", hint:"Indice", resTitle:"Résultats", finalScore:"Score final", finalTime:"Temps", finalAcc:"Précision", saveScore:"Enregistrer au classement (cet appareil)", playAgain:"Rejouer", goBoard:"Voir le classement", seeBreakdown:"Voir le détail des questions", boardTitle:"Classement local", colName:"Nom", colRegion:"Région", colScore:"Score", colTime:"Temps (s)", colAcc:"Précision", colDate:"Date", clearBoard:"Effacer le classement (cet appareil)", backHome:"Retour à l’accueil", disclaimer:"Simulation de formation. Les exemples citent des organismes et des marques canadiens à des fins de sensibilisation. Aucune affiliation ni approbation. N’entrez jamais de véritables identifiants. Toutes les données restent sur votre appareil sauf si vous les partagez.", regions:{AB:'Alberta',BC:'Colombie‑Britannique',MB:'Manitoba',NB:'Nouveau‑Brunswick',NL:'Terre‑Neuve‑et‑Labrador',NS:'Nouvelle‑Écosse',NT:'Territoires du Nord‑Ouest',NU:'Nunavut',ON:'Ontario',PE:"Île‑du‑Prince‑Édouard",QC:'Québec',SK:'Saskatchewan',YT:'Yukon'} },
+      ur:{ langName:'اردو', heroTitle:'پورے کینیڈا میں فِشنگ ڈرل', heroSubtitle:'محفوظ سیمولیشن میں اپنی مہارت آزمائیں۔ سرخ جھنڈیاں پہچانیں، تیزی سے قدم اٹھائیں، اور اپنی کمیونٹی کی حفاظت کریں۔', ctaStart:'ڈرل شروع کریں', ctaLeaderboard:'لیڈر بورڈ', howItWorks:'طریقہ کار', loginTitle:'ڈرل میں داخل ہوں', loginBlurb:'اپنا سائبر نام یا نام اور ای میل درج کریں تاکہ آپ کا اسکور لیڈر بورڈ پر آئے۔', labelHandle:'سائبر نام یا نام', labelEmail:'ای میل', labelRegion:'صوبہ/علاقہ', startNow:'شروع کریں', cancel:'منسوخ کریں', beginGame:'شروع', back:'واپس', score:'اسکور', email:'ای میل', timeLeft:'باقی وقت', accuracy:'درستگی', from:'بھیجنے والا', to:'جانے والا', markPhish:'فِشنگ رپورٹ کریں', markSafe:'محفوظ لگتا ہے', hint:'اشارہ', resTitle:'نتائج', finalScore:'حتمی اسکور', finalTime:'وقت', finalAcc:'درستگی', playAgain:'دوبارہ کھیلیں', goBoard:'لیڈر بورڈ دیکھیں', backHome:'ہوم پر واپس' },
+      ar:{ langName:'العربية', heroTitle:'تدريب تصيّد على مستوى كندا', heroSubtitle:'اختبر مهاراتك بأمان. تعرّف على العلامات الحمراء وتحرّك بسرعة واحمِ مجتمعك.', ctaStart:'ابدأ التدريب', ctaLeaderboard:'لوحة الصدارة', howItWorks:'كيفية العمل', loginTitle:'ادخل التدريب', loginBlurb:'أدخل اسمك أو لقبك الإلكتروني وبريدك لوضع نتيجتك في لوحة الصدارة.', labelHandle:'اسم/لقب إلكتروني', labelEmail:'البريد الإلكتروني', labelRegion:'المقاطعة/الإقليم', startNow:'ابدأ الآن', cancel:'إلغاء', beginGame:'ابدأ', back:'رجوع', score:'النتيجة', email:'البريد', timeLeft:'الوقت المتبقي', accuracy:'الدقة', from:'من', to:'إلى', markPhish:'إبلاغ تصيّد', markSafe:'يبدو آمناً', hint:'تلميح', resTitle:'النتائج', finalScore:'النتيجة النهائية', finalTime:'الوقت', finalAcc:'الدقة', playAgain:'العب مجدداً', goBoard:'عرض لوحة الصدارة', backHome:'العودة للرئيسية' },
+      ta:{ langName:'தமிழ்', heroTitle:'கனடா முழுவதும் பிஷிங் பயிற்சி', heroSubtitle:'பாதுகாப்பான முறைப்பயிற்சியில் உங்கள் திறனைச் சோதிக்கவும். எச்சரிக்கை குறிகளை கண்டுபிடிக்கவும்.', ctaStart:'பயிற்சி தொடங்கு', ctaLeaderboard:'முன்னணி பட்டியல்', howItWorks:'எப்படி வேலை', loginTitle:'பயிற்சிக்கு நுழை', loginBlurb:'உங்கள் பெயர்/கைநாமமும் மின்னஞ்சலும் கொடுக்கவும்.', labelHandle:'பெயர்/கைநாமம்', labelEmail:'மின்னஞ்சல்', labelRegion:'மாநிலம்/பிரதேசம்', startNow:'இப்போது தொடங்கு', cancel:'ரத்து', beginGame:'தொடங்கு', back:'பின்', score:'மதிப்பெண்', email:'மின்னஞ்சல்', timeLeft:'மீதமுள்ள நேரம்', accuracy:'துல்லியம்', from:'இருந்து', to:'வரை', markPhish:'பிஷிங் புகார்', markSafe:'பாதுகாப்பானது', hint:'சுட்டு', resTitle:'விளைவுகள்', finalScore:'இறுதி மதிப்பெண்', finalTime:'நேரம்', finalAcc:'துல்லியம்', playAgain:'மீண்டும்', goBoard:'முன்னணி பட்டியல்', backHome:'முகப்பு' },
+      zh:{ langName:'中文', heroTitle:'全加拿大全民钓鱼演练', heroSubtitle:'在安全的模拟中测试你的技能。识别危险信号、迅速行动、保护社区。', ctaStart:'开始演练', ctaLeaderboard:'排行榜', howItWorks:'如何运作', loginTitle:'进入演练', loginBlurb:'输入昵称或姓名和邮箱，我们会记录成绩。', labelHandle:'昵称或姓名', labelEmail:'邮箱', labelRegion:'省/地区', startNow:'现在开始', cancel:'取消', beginGame:'开始', back:'返回', score:'得分', email:'邮件', timeLeft:'剩余时间', accuracy:'准确率', from:'发件人', to:'收件人', markPhish:'报告钓鱼', markSafe:'看起来安全', hint:'提示', resTitle:'结果', finalScore:'最终得分', finalTime:'时间', finalAcc:'准确率', playAgain:'再玩一次', goBoard:'查看排行榜', backHome:'返回首页' },
+      fa:{ langName:'فارسی', heroTitle:'رزمایش فیشینگ سراسری کانادا', heroSubtitle:'مهارت‌های خود را در محیطی امن بیازمایید. نشانه‌ها را بشناسید و سریع عمل کنید.', ctaStart:'شروع رزمایش', ctaLeaderboard:'جدول برترین‌ها', howItWorks:'نحوه اجرا', loginTitle:'ورود به رزمایش', loginBlurb:'نام/لقب و ایمیل خود را وارد کنید تا امتیاز شما ثبت شود.', labelHandle:'نام یا لقب', labelEmail:'ایمیل', labelRegion:'استان/قلمرو', startNow:'اکنون شروع کنید', cancel:'انصراف', beginGame:'شروع', back:'بازگشت', score:'امتیاز', email:'ایمیل', timeLeft:'زمان باقیمانده', accuracy:'دقت', from:'از', to:'به', markPhish:'گزارش فیشینگ', markSafe:'ایمن به نظر می‌رسد', hint:'راهنما', resTitle:'نتایج', finalScore:'امتیاز نهایی', finalTime:'زمان', finalAcc:'دقت', playAgain:'دوباره', goBoard:'مشاهده جدول', backHome:'بازگشت به خانه' },
+      sw:{ langName:'Kiswahili', heroTitle:'Majaribio ya ulaghai kote Kanada', heroSubtitle:'Jaribu ujuzi wako kwa usalama. Tambua vihatarishi na linda jamii.', ctaStart:'Anza Jaribio', ctaLeaderboard:'Orodha ya Vinara', howItWorks:'Jinsi inavyofanya kazi', loginTitle:'Ingia kwenye Jaribio', loginBlurb:'Weka jina au la jina na barua pepe ili kuweka alama yako.', labelHandle:'Jina au la jina', labelEmail:'Barua pepe', labelRegion:'Mkoa/Enclave', startNow:'Anza sasa', cancel:'Ghairi', beginGame:'Anza', back:'Rudi', score:'Alama', email:'Barua pepe', timeLeft:'Muda uliosalia', accuracy:'Usahihi', from:'Kutoka', to:'Kwa', markPhish:'Ripoti ulaghai', markSafe:'Inaonekana salama', hint:'Kidokezo', resTitle:'Matokeo', finalScore:'Alama ya mwisho', finalTime:'Muda', finalAcc:'Usahihi', playAgain:'Cheza tena', goBoard:'Tazama Orodha', backHome:'Rudi nyumbani' },
+      pa:{ langName:'ਪੰਜਾਬੀ', heroTitle:'ਕੈਨੇਡਾ-ਵਿਆਪੀ ਫਿਸ਼ਿੰਗ ਡ੍ਰਿਲ', heroSubtitle:'ਸੁਰੱਖਿਅਤ ਸਿਮੂਲੇਸ਼ਨ ਵਿੱਚ ਆਪਣੀਆਂ ਕੁਸ਼ਲਤਾਵਾਂ ਅਜ਼ਮਾਓ।', ctaStart:'ਡ੍ਰਿਲ ਸ਼ੁਰੂ ਕਰੋ', ctaLeaderboard:'ਲੀਡਰਬੋਰਡ', howItWorks:'ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ', loginTitle:'ਡ੍ਰਿਲ ਵਿੱਚ ਦਾਖ਼ਲ ਹੋਵੋ', loginBlurb:'ਆਪਣਾ ਨਾਂ/ਉਪਨਾਮ ਅਤੇ ਈਮੇਲ ਦਿਓ।', labelHandle:'ਨਾਂ/ਉਪਨਾਮ', labelEmail:'ਈਮੇਲ', labelRegion:'ਸੂਬਾ/ਖੇਤਰ', startNow:'ਹੁਣੇ ਸ਼ੁਰੂ ਕਰੋ', cancel:'ਰੱਦ', beginGame:'ਸ਼ੁਰੂ', back:'ਵਾਪਸ', score:'ਅੰਕ', email:'ਈਮੇਲ', timeLeft:'ਬਾਕੀ ਸਮਾਂ', accuracy:'ਸਹੀਪਨ', from:'ਤੋਂ', to:'ਨੂੰ', markPhish:'ਫਿਸ਼ਿੰਗ ਰਿਪੋਰਟ ਕਰੋ', markSafe:'ਸੁਰੱਖਿਅਤ ਲੱਗਦਾ ਹੈ', hint:'ਇਸ਼ਾਰਾ', resTitle:'ਨਤੀਜੇ', finalScore:'ਅੰਤਿਮ ਅੰਕ', finalTime:'ਸਮਾਂ', finalAcc:'ਸਹੀਪਨ', playAgain:'ਮੁੜ ਖੇਡੋ', goBoard:'ਲੀਡਰਬੋਰਡ ਵੇਖੋ', backHome:'ਘਰ ਵਾਪਸ' },
+      tl:{ langName:'Filipino', heroTitle:'Canada‑wide Phishing Drill', heroSubtitle:'Subukin ang iyong kakayahan sa ligtas na simulation. Kilalanin ang red flags at kumilos nang mabilis.', ctaStart:'Simulan ang Drill', ctaLeaderboard:'Leaderboard', howItWorks:'Paano gumagana', loginTitle:'Pumasok sa Drill', loginBlurb:'Ilagay ang pangalan o handle at email.', labelHandle:'Handle o pangalan', labelEmail:'Email', labelRegion:'Probinsya/Rehiyon', startNow:'Simulan na', cancel:'Kanselahin', beginGame:'Simulan', back:'Bumalik', score:'Iskor', email:'Email', timeLeft:'Natitirang oras', accuracy:'Katumpakan', from:'Mula', to:'Para kay', markPhish:'I-report ang Phishing', markSafe:'Mukhang Ligtas', hint:'Pahiwatig', resTitle:'Mga Resulta', finalScore:'Huling iskor', finalTime:'Oras', finalAcc:'Katumpakan', playAgain:'Ulitin', goBoard:'Tingnan ang Leaderboard', backHome:'Bumalik sa home' }
+    };
+
+    // Stats (optional, not rendered in v2)
+    const PUBLIC_STATS = [];
+
+    // Five phishing scenarios
+    const SCENARIOS = [
+      { id:1, from:"Canada Post <notifications@canadapost‑secure.ca>", to:"{{you}}", subject:"Action required: delivery fee ($1.25) to release your package", html:`<p>We tried to deliver your package <strong>CA‑{{rand(100000,999999)}}</strong> but a small fee is required to complete customs processing.</p><p>Please pay <strong>$1.25</strong> within 12 hours to avoid return to sender.</p><p><a href="#" data-badlink>Pay fee</a> · <a href="#" data-badlink>Track package</a></p><p>Thank you, Canada Post</p>`, isPhish:true, flags:[{id:'domain',label:'Suspicious domain (not canadapost-postescanada.ca)',points:2},{id:'fee',label:'Unusual micro‑fee urgency',points:1},{id:'deadline',label:'Short deadline pressure',points:1},{id:'salutation',label:'Generic greeting / missing details',points:1}], hint:"Check the sender’s domain and hover links before clicking." },
+      { id:2, from:"CRA / ARC <refund@cra‑canada.ca>", to:"{{you}}", subject:"You have an unclaimed tax refund", html:`<p>Canada Revenue Agency has calculated a tax refund owed to you: <strong>$247.39</strong>.</p><p>Claim your deposit today by confirming your bank details.</p><p><a href="#" data-badlink>Claim refund</a></p><p>© Government of Canada</p>`, isPhish:true, flags:[{id:'govDomain',label:'Government email not using .gc.ca',points:2},{id:'bank',label:'Asks for banking via email link',points:2},{id:'typos',label:'Branding/format inconsistencies',points:1}], hint:"CRA doesn’t ask for banking updates by email links; sign in via official channels." },
+      { id:3, from:"AWS Canada <no‑reply@amazonaws‑security.ca>", to:"{{you}}", subject:"[ALERT] New sign‑in from Toronto — was this you?", html:`<p>We detected a new sign‑in to your AWS account.</p><ul><li>Location: Toronto, ON</li><li>Device: Windows · Chrome</li><li>Time: {{now()}}</li></ul><p>If this was not you, <a href="#" data-badlink>reset your password immediately</a>.</p>`, isPhish:true, flags:[{id:'subdomain',label:'Look‑alike domain (not *.amazonaws.com)',points:2},{id:'panic',label:'Urgency to reset via link',points:1},{id:'tracking',label:'Generic details anyone could guess',points:1}], hint:"If in doubt, go directly to the service in a new tab; never via email links." },
+      { id:4, from:"Bell Mobility <support@bell‑secure.ca>", to:"{{you}}", subject:"Unpaid invoice — service suspension in 24h", html:`<p>Your latest invoice is unpaid. Service will be suspended unless you verify your payment profile.</p><p><a href="#" data-badlink>Verify now</a></p><p>Bell Mobility Billing</p>`, isPhish:true, flags:[{id:'bellDomain',label:'Domain impersonation (not bell.ca)',points:2},{id:'threat',label:'Threat of immediate suspension',points:1},{id:'generic',label:'No account number or personalized info',points:1}], hint:"Threats and deadlines are classic pressure tactics." },
+      { id:5, from:"RBC Security <notify@rbc‑alerts.com>", to:"{{you}}", subject:"Important: verify unusual debit transaction", html:`<p>We noticed an unusual debit of <strong>$482.19</strong>. If this wasn’t you, verify your account immediately.</p><p><a href="#" data-badlink>Review transaction</a></p><p>Royal Bank of Canada</p>`, isPhish:true, flags:[{id:'rbcDomain',label:'Look‑alike domain (not rbc.com / rbcroyalbank.com)',points:2},{id:'linkLogin',label:'Asks to log in from email link',points:2},{id:'vague',label:'No last‑4 digits or account details',points:1}], hint:"Fraud alerts should cite details and come from official domains; use the bank app/site directly." }
+    ];
+
+    // ===== STATE & HELPERS =====
+    const $ = (s)=>document.querySelector(s), $$=(s)=>Array.from(document.querySelectorAll(s));
+    let currentLang = localStorage.getItem('rsc_lang') || 'en';
+    let player = null, game = null;
+    function t(key){ const pack = I18N[currentLang] || I18N.en; return (pack && key in pack) ? pack[key] : (I18N.en[key]||key); }
+    function trRegion(code){ const pack = I18N[currentLang] || I18N.en; const map = (pack && pack.regions) || I18N.en.regions; return map?.[code] || code; }
+    function applyI18n(){ $$('[data-i18n]').forEach(n=>{ const k=n.dataset.i18n; n.innerHTML=t(k); }); const $r=$('#region'); if($r){ $r.innerHTML = REGIONS.map(r=>`<option value="${r.code}">${trRegion(r.code)}</option>`).join(''); } }
+    function initLangSelector(){ const $l=$('#lang'); const options = Object.keys(I18N).map(code=>`<option value="${code}" ${code===currentLang?'selected':''}>${I18N[code].langName||code}</option>`).join(''); $l.innerHTML=options; $l.addEventListener('change',()=>{ currentLang=$l.value; localStorage.setItem('rsc_lang',currentLang); applyI18n(); }); }
+
+    function updateCountdown(){ const target=new Date(EVENT_ISO); const now=new Date(); const ms=target-now; const $cd=$('#countdown'); const $et=$('#eventTime'); const fmt=new Intl.DateTimeFormat(currentLang,{dateStyle:'full',timeStyle:'short',timeZone:EVENT_TZ}); $et.textContent=fmt.format(target); if(ms<=0){ $cd.textContent = currentLang==='fr'? 'Jour de l’exercice':'Drill Day'; return; } const d=Math.floor(ms/86400000); const h=Math.floor((ms%86400000)/3600000); const m=Math.floor((ms%3600000)/60000); $cd.textContent=`${d}d ${h}h ${m}m` + (currentLang==='fr'?' avant':' left'); }
+    function show(id){ $$('.screen').forEach(s=>s.classList.remove('active')); if(id) $('#'+id).classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+
+    function compileScenarios(){ const you=player?.email || 'you@example.ca'; const compiled = SCENARIOS.map(s=>({...s})); for(const s of compiled){ s.to=(s.to||'').replace('{{you}}',you); s.html=(s.html||'').replace(/{{you}}/g,you).replace(/{{now\(\)}}/g,new Date().toLocaleString()).replace(/{{rand\((\d+),(\d+)\)}}/g,(_,a,b)=> String(Math.floor(Number(a)+Math.random()*(Number(b)-Number(a))))); } return compiled; }
+
+    function startGame(){ const scenarios=compileScenarios(); game={ startedAt:Date.now(), timeLeft:60, index:0, scenarios, score:0, correct:0, total:scenarios.length, answers:[] }; $('#hudTotal').textContent=String(game.total); $('#hudScore').textContent='0'; $('#hudAccuracy').textContent='100%'; $('#hudIndex').textContent='1'; renderList(); renderEmail(); tick(); show('screen-game'); }
+    function tick(){ if(!game) return; $('#hudTime').textContent=String(game.timeLeft); if(game.timeLeft<=0){ return endGame(); } game._timer=setTimeout(()=>{ game.timeLeft-=1; tick(); },1000); }
+    function renderList(){ const list=$('#emailList'); list.innerHTML=''; game.scenarios.forEach((s,i)=>{ const item=document.createElement('div'); item.className='email-item'; item.role='option'; item.setAttribute('tabindex','0'); item.setAttribute('aria-current', i===game.index?'true':'false'); item.innerHTML=`<div style="font-weight:700;">${escapeHTML(s.subject)}</div><div style=\"color:var(--muted); font-size:13px;\">${escapeHTML(s.from)}</div>`; item.addEventListener('click',()=>{ game.index=i; renderList(); renderEmail(); }); item.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); item.click(); }}); list.appendChild(item); }); }
+    function renderEmail(){ const s=game.scenarios[game.index]; $('#e-subject').textContent=s.subject; $('#e-from').textContent=s.from; $('#e-to').textContent=s.to; $('#e-html').innerHTML=s.html; const brandSrc=brandLogoFor(s.from); const spot=$('#brandSpot'); spot.innerHTML = brandSrc? `<img src="${brandSrc}" alt="Brand logo" style="max-height:36px;max-width:160px;border-radius:8px">` : '';
+      $$('[data-badlink]').forEach(a=>{ a.addEventListener('click', e=>e.preventDefault()); a.setAttribute('title','(simulated) hovering reveals a suspicious URL'); }); $$('[data-goodlink]').forEach(a=>{ a.addEventListener('click', e=>e.preventDefault()); a.setAttribute('title','(simulated) official URL example'); }); const flags=$('#flagList'); flags.innerHTML = `<div style=\"font-weight:700;\">${currentLang==='fr'?'Indices (facultatif)':'Red flags (optional)'}:</div>` + s.flags.map((f,idx)=>{ const id=`flag_${s.id}_${idx}`; return `<label class=\"flag\"><input type=\"checkbox\" data-flag=\"${f.id}\" id=\"${id}\" /> ${escapeHTML(f.label)}</label>`; }).join(''); $('#hintBox').style.display='none'; $('#hudIndex').textContent=String(game.index+1); document.onkeydown = (e)=>{ if(e.key==='p'||e.key==='P') submitChoice(true); if(e.key==='s'||e.key==='S') submitChoice(false); }; }
+    function submitChoice(isPhishChoice){ const s=game.scenarios[game.index]; const chosenCorrect=(isPhishChoice===s.isPhish); const chosenFlags=$$('#flagList input[type="checkbox"]:checked').map(cb=>cb.dataset.flag); let points=chosenCorrect?5:-2; if(chosenCorrect){ for(const f of s.flags){ if(chosenFlags.includes(f.id)) points += (f.points||0); } } game.score+=points; if(chosenCorrect) game.correct+=1; const elapsed=Math.floor((Date.now()-game.startedAt)/1000); game.answers.push({ id:s.id, choice:isPhishChoice?'phish':'safe', correct:chosenCorrect, flags:chosenFlags, time:elapsed, points }); $('#hudScore').textContent=String(game.score); const acc=Math.round((game.correct/game.answers.length)*100)||0; $('#hudAccuracy').textContent=acc+'%'; if(game.index < game.scenarios.length-1){ game.index+=1; renderList(); renderEmail(); } else { endGame(); } }
+    function endGame(){ if(game?._timer){ try{ clearTimeout(game._timer);}catch(e){} } const totalTime=Math.max(0,60-game.timeLeft); $('#finalScore').textContent=String(game.score); $('#finalTime').textContent=String(totalTime); const acc=Math.round((game.correct/game.total)*100)||0; $('#finalAcc').textContent=acc+'%'; const bd=game.answers.map((a,i)=>{ const s=game.scenarios[i]; return `<div style=\"margin:8px 0\"><strong>${escapeHTML(s.subject)}</strong> — ${a.correct?'✔':'✖'} (${a.points>=0?'+':''}${a.points})` + (a.flags?.length? `<div style=\"color:var(--muted)\">Flags: ${a.flags.join(', ')}</div>`:'') + `</div>`; }).join(''); $('#breakdown').innerHTML=bd; show('screen-results'); }
+    function saveToBoard(){ if(!player||!game) return; const totalTime=Math.max(0,60-game.timeLeft); const acc=Math.round((game.correct/game.total)*100)||0; const entry={ name:player.handle,email:player.email,region:player.region, score:game.score,time:totalTime,acc, date:new Date().toISOString() }; const key='rsc_board_v1'; const list=JSON.parse(localStorage.getItem(key)||'[]'); list.push(entry); list.sort((a,b)=> (b.score - a.score) || (a.time - b.time)); localStorage.setItem(key, JSON.stringify(list.slice(0,100))); renderBoard(); }
+    function renderBoard(){ const key='rsc_board_v1'; const list=JSON.parse(localStorage.getItem(key)||'[]'); const tbody=$('#boardBody'); tbody.innerHTML=list.map((r,i)=>{ const d=new Date(r.date); const when=d.toLocaleString(currentLang); return `<tr><td>${i+1}</td><td>${escapeHTML(r.name)}</td><td>${escapeHTML(r.region)}</td><td>${r.score}</td><td>${r.time}</td><td>${r.acc}%</td><td>${when}</td></tr>`; }).join(''); show('screen-board'); }
+    function escapeHTML(s){ return String(s).replace(/[&<>"']/g, c=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c])); }
+
+    function wireEvents(){ $('#ctaStart').addEventListener('click',()=>{ show('screen-login'); $('#handle').focus(); }); $('#ctaLeaderboard').addEventListener('click',renderBoard); $('#btn-how').addEventListener('click',()=>{ show('screen-instructions'); }); $('#btn-cancel-login').addEventListener('click',()=>{ show(null); }); $('#loginForm').addEventListener('submit',(e)=>{ e.preventDefault(); const handle=$('#handle').value.trim()||'Player'; const email=$('#email').value.trim(); const region=$('#region').value; if(!email || !email.includes('@')){ alert('Please enter a valid email.'); return; } if(!$('#consent').checked){ alert('Please accept the consent to continue.'); return; } player={handle,email,region}; show('screen-instructions'); }); $('#beginGame').addEventListener('click', startGame); $('#backToLogin').addEventListener('click', ()=> show('screen-login')); $('#btn-phish').addEventListener('click', ()=> submitChoice(true)); $('#btn-safe').addEventListener('click', ()=> submitChoice(false)); $('#btn-hint').addEventListener('click', ()=>{ const s=game.scenarios[game.index]; const box=$('#hintBox'); box.style.display='block'; box.textContent=s.hint||''; }); $('#saveScore').addEventListener('click', ()=>{ saveToBoard(); alert(t('boardTitle')); }); $('#playAgain').addEventListener('click', ()=>{ show('screen-login'); }); $('#goBoard').addEventListener('click', renderBoard); $('#clearBoard').addEventListener('click', ()=>{ if(confirm('Clear local leaderboard?')){ localStorage.removeItem('rsc_board_v1'); renderBoard(); } }); $('#backHome').addEventListener('click', ()=> show(null)); }
+
+    function init(){ initLangSelector(); applyI18n(); wireEvents(); updateCountdown(); setInterval(updateCountdown,60000); const $region=$('#region'); $region.innerHTML = REGIONS.map(r=>`<option value="${r.code}">${trRegion(r.code)}</option>`).join(''); const siteLogo=$('#siteLogo'); if(SITE_LOGO_DATA_URL){ siteLogo.src=SITE_LOGO_DATA_URL; } }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
